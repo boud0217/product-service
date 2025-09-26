@@ -1,27 +1,36 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-import os
 from dotenv import load_dotenv
-
-# Charger les variables d'environnement depuis .env
+import os
+import uvicorn
+ 
+# 加载 .env 文件中的环境变量（仅本地开发时有用）
 load_dotenv()
-
-# Créer l'application FastAPI
+ 
+# 获取端口号，默认 3030
+port = int(os.getenv("PORT", 3030))
+ 
+# 创建 FastAPI 应用
 app = FastAPI()
-
-# Configurer CORS
+ 
+# 配置 CORS：允许任意来源，仅允许 GET 方法
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Permet toutes les origines
-    allow_methods=["GET"],  # Uniquement les requêtes GET
-    allow_headers=["*"]
+    allow_origins=["*"],   # 允许所有域名
+    allow_methods=["GET"], # 仅允许 GET 请求
+    allow_headers=["*"],   # 允许所有请求头
 )
-
-# Liste des produits
+ 
+# 定义 /products 路由
 @app.get("/products")
-async def get_products():
+def get_products():
     return [
         {"id": 1, "name": "Dog Food", "price": 19.99},
         {"id": 2, "name": "Cat Food", "price": 34.99},
-        {"id": 3, "name": "Bird Seeds", "price": 10.99}
+        {"id": 3, "name": "Bird Seeds", "price": 10.99},
     ]
+ 
+# 启动服务
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=port)
+ 
