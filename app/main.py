@@ -17,6 +17,7 @@ app.add_middleware(
     allow_headers=["*"],   
 )
  
+ 
 @app.get("/products")
 def get_products():
     return [
